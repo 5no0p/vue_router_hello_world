@@ -10,6 +10,7 @@ const routes = [
 
 const router = createRouter({
     history: createWebHistory(),
+    linkExactActiveClass: 'text-indigo-600 font-semibold',
     routes,
 })
 
