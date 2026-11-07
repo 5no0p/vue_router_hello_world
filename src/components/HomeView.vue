@@ -1,7 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 // Application to fetch Pokemon data and display it in cards
+
+const router = useRouter()
 
 // Define variables for Pokemon data, loading status and error
 const pokemons = ref([])
@@ -56,6 +59,11 @@ const getTotalPower = (pokemon) => {
   return pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0)
 }
 
+// function to navigate to the pokemon page
+function goToPokemon(id){
+  router.push({name:'pokemon', params: { id }})
+}
+
 onMounted(fetchPokemonData)
 </script>
 
@@ -94,6 +102,7 @@ onMounted(fetchPokemonData)
               :src="getSprite(pokemon)"
               :alt="pokemon.name"
               class="w-32 h-32 object-contain drop-shadow-lg"
+              @click="goToPokemon(pokemon.id)"
               loading="lazy"            
             />
           </div>
@@ -119,8 +128,8 @@ onMounted(fetchPokemonData)
               </div>
             </div>
             <!-- Moves (extra skills) -->
-             <div>
-              <h3>Moves</h3>
+             <div class="mb-3">
+              <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Moves</h3>
               <div>
                 <span
                   v-for="move in getMoves(pokemon)"
