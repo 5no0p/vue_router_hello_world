@@ -6,7 +6,7 @@ import HomeView from './components/HomeView.vue'
 const routes = [
     { path: '/', component: HomeView },
     { path: '/about', component: () => import('./components/AboutView.vue')},
-    { path: '/pokemon/:id', component: () => import('./components/PokemonView.vue')}
+    { path: '/pokemon/:id', name: 'pokemon', component: () => import('./components/PokemonView.vue')}
 ]
 
 const router = createRouter({
