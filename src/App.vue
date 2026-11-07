@@ -3,12 +3,10 @@
 </script>
 
 <template>
-  <h1 class="text-lg font-bold">Hello Vue Router!</h1>
-  <p>
-    <strong>Current Router Path:</strong>{{ $route.fullPath }}
-  </p>
-  <nav class="flex gap-4 text-xl">
-    <RouterLink
+  <div class="min-h-screen bg-gray-100 ">
+
+    <nav class="flex gap-4 px-4 py-4 text-xl">
+      <RouterLink
       to="/"
       class="text-slate-500 hover:text-slate-800 transition-colors"
       >
@@ -24,6 +22,7 @@
   <main>
     <RouterView />
   </main>
+</div>
 </template>
 
 <style scoped>
