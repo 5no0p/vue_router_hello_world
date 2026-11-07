@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute()
 
 // Define variables for Pokemon data, loading status and error
 const pokemon = ref(null)
@@ -24,6 +27,8 @@ const fetchPokemonData = async (id) => {
         isLoading.value = false
     }
 }
+
+onMounted(fetchPokemonData(route.params.id))
 </script>
 
 <template>
