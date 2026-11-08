@@ -1,14 +1,24 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute()
+const router = useRouter();
 
 // Define variables for Pokemon data, loading status and error
 const pokemon = ref(null)
 const isLoading = ref(true)
 const error = ref(null)
-const pokemonId = computed(() => route.params.id)
+const pokemonId = computed({
+    get() {
+        return route.params.id
+    },
+    set(id) {
+        return router.push({name:'pokemon', params:{id}})
+    }
+});
+
+let timeoutId = null
 
 // Define variable for Pokemon api url
 const pokemonUrl = 'https://pokeapi.co/api/v2/pokemon/'
@@ -49,13 +59,24 @@ const getTotalPower = (pokemon) => {
   return pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0)
 }
 
+
+watch(()=> route.params.id, (newId) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => {
+        fetchPokemonData(newId)
+    }, 1000)
+})
+
 onMounted(() => fetchPokemonData(pokemonId.value))
 </script>
 
 <template>
 <div class="min-h-screen bg-gray-100 p-8 font-sans">
 
-    <h1>Pokeomn Card</h1>
+    <h1>Pokeomn Card -</h1>
+    <input 
+      v-model.trim="pokemonId"
+    />
     <!-- Loading status -->
     <div v-if="isLoading">
         <p>Loading...</p>
