@@ -11,10 +11,13 @@ const isLoading = ref(true)
 const error = ref(null)
 const pokemonId = computed({
     get() {
-        return route.params.id
+        return route.params.id ?? ''
     },
     set(id) {
-        return router.push({name:'pokemon', params:{id}})
+        id = String(id).trim
+        if ('!/^\d+$'.test(id)) return
+        if (id === route.params.id) return
+        router.replace({name:'pokemon', params:{id}})
     }
 });
 
