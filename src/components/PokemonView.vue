@@ -1,45 +1,65 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, onUnmounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute()
 const router = useRouter();
 
 // Define variables for Pokemon data, loading status and error
+/* ---- Pokemon Instance & Request Status ---- */
 const pokemon = ref(null)
 const isLoading = ref(true)
 const error = ref(null)
-const pokemonId = computed({
-    get() {
-        return route.params.id ?? ''
-    },
-    set(id) {
-        id = String(id).trim()
-        if (!/^\d+$/.test(id)) return
-        if (id === route.params.id) return
-        router.replace({name:'pokemon', params:{id}})
-    }
-});
-
-let timeoutId = null
 
 // Define variable for Pokemon api url
 const pokemonUrl = 'https://pokeapi.co/api/v2/pokemon/'
 
+// A variable to test if the id is number and not empty
+const isValidId = (id) => /^\d+$/.test(id)
+
+const inputId = ref(String(route.params.id ?? ''))
+
+watch(() => route.params.id, (id) => {
+    inputId.value = String(id ?? '')
+})
+
+let navTimeoutId = null
+const commitId = () => {
+    const id = inputId.value.trim()
+    if (!isValidId(id) || id === String(route.params.id)) return 
+}
+
+watch(inputId, () => {
+    clearTimeout(navTimeoutId)
+    navTimeoutId = setTimeout(commitId, 300)
+})
+
+let controller = null
+let requestId = 0
+
+
 // Define function to fetch Pokemon data by ID
 const fetchPokemonData = async (id) => {
+    const current = ++requestId
+    controller?.abort()
+    controller = new AbortController()
+
     isLoading.value = true
     error.value = null
+
     try {
-        const data = await fetch(pokemonUrl + `${id}/`)
-        if(!data.ok){
+        const req = await fetch(`${pokemonUrl}${id}/`, {signal: controller.signal})
+        if(!req.ok){
             throw new Error(`HTTP error! status: ${data.status}`)
         }
-        pokemon.value = await data.json()
+        const data = await req.json()
+        if (current !== requestId) return
+        pokemon.value = data
     } catch (err) {
+        if (current !== requestId || err.name === 'AbortError') return
         error.value = err.message
     } finally {
-        isLoading.value = false
+        if (current === requestId) isLoading.value = false
     }
 }
 
@@ -64,13 +84,16 @@ const getTotalPower = (pokemon) => {
 
 
 watch(()=> route.params.id, (newId) => {
-    clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => {
-        fetchPokemonData(newId)
-    }, 1000)
-})
+    if(newId) fetchPokemonData(newId)
+  
+},
+{immediate: true}
+)
 
-onMounted(() => fetchPokemonData(pokemonId.value))
+onUnmounted(() => {
+    clearTimeout(navTimeoutId)
+    controller?.abort
+})
 </script>
 
 <template>
@@ -78,7 +101,10 @@ onMounted(() => fetchPokemonData(pokemonId.value))
 
     <h1>Pokeomn Card -</h1>
     <input 
-      v-model.trim="pokemonId"
+      v-model.trim="inputId"
+      inputmode="numeric"
+      placeholder="Pokemon ID"
+      @keyup.enter="commitId"
     />
     <!-- Loading status -->
     <div v-if="isLoading">
