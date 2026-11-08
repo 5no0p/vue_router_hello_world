@@ -14,8 +14,8 @@ const pokemonId = computed({
         return route.params.id ?? ''
     },
     set(id) {
-        id = String(id).trim
-        if ('!/^\d+$'.test(id)) return
+        id = String(id).trim()
+        if (!/^\d+$/.test(id)) return
         if (id === route.params.id) return
         router.replace({name:'pokemon', params:{id}})
     }
