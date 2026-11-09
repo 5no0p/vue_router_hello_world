@@ -26,7 +26,8 @@ watch(() => route.params.id, (id) => {
 let navTimeoutId = null
 const commitId = () => {
     const id = inputId.value.trim()
-    if (!isValidId(id) || id === String(route.params.id)) return 
+    if (!isValidId(id) || id === String(route.params.id)) return
+    router.replace({name:'pokemon', params:{id}})
 }
 
 watch(inputId, () => {
