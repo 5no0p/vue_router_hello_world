@@ -2,6 +2,10 @@
 import { ref, onUnmounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+const props = defineProps({
+    pokemonId: { type: Number, required: true}
+})
+
 const route = useRoute()
 const router = useRouter();
 
@@ -40,7 +44,7 @@ let requestId = 0
 
 
 // Define function to fetch Pokemon data by ID
-const fetchPokemonData = async (id) => {
+const fetchPokemonData = async (pokemonId) => {
     const current = ++requestId
     controller?.abort()
     controller = new AbortController()
@@ -49,7 +53,7 @@ const fetchPokemonData = async (id) => {
     error.value = null
 
     try {
-        const req = await fetch(`${pokemonUrl}${id}/`, {signal: controller.signal})
+        const req = await fetch(`${pokemonUrl}${pokemonId}/`, {signal: controller.signal})
         if(!req.ok){
             throw new Error(`HTTP error! status: ${data.status}`)
         }
@@ -83,8 +87,19 @@ const getTotalPower = (pokemon) => {
   return pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0)
 }
 
+// Helper to get the next Pokemon
+function next() {
+  router.push({ name: 'pokemon', params: { id: props.pokemonId + 1 } })
+}
 
-watch(()=> route.params.id, (newId) => {
+// Helper to back to previes pokemon
+function prev() {
+  if (props.pokemonId > 1) {
+    router.push({ name: 'pokemon', params: { id: props.pokemonId - 1 } })
+  }
+}
+
+watch(()=> props.pokemonId, (newId) => {
     if(newId) fetchPokemonData(newId)
   
 },
@@ -121,7 +136,8 @@ onUnmounted(() => {
         </button>
     </div>
     <!-- Success status -->
-    <div v-else class="flex items-center justify-center">
+    <div v-else class="flex items-center justify-center gap-2">
+        <button class="mr-4 cursor-pointer bg-indigo-500 text-white px-4 py-0.5" @click="prev">Prev</button>
         <div class="bg-white rounded-2xl shadow-md">
 
             <!-- Image -->
@@ -171,7 +187,9 @@ onUnmounted(() => {
                 <span class="text-lg text-bold text-gray-800">{{ getTotalPower(pokemon) }}</span>
               </div>
             </div>
-         </div>
+        </div>
+        <button class="ml-4 cursor-pointer bg-indigo-500 text-white px-4 py-0.5" @click="next">Next</button>
+        
     </div>
 
 </div>
