@@ -21,16 +21,16 @@ const pokemonUrl = 'https://pokeapi.co/api/v2/pokemon/'
 // A variable to test if the id is number and not empty
 const isValidId = (id) => /^\d+$/.test(id)
 
-const inputId = ref(String(route.params.id ?? ''))
+const inputId = ref(String(props.pokemonId ?? ''))
 
-watch(() => route.params.id, (id) => {
+watch(() => props.pokemonId, (id) => {
     inputId.value = String(id ?? '')
 })
 
 let navTimeoutId = null
 const commitId = () => {
     const id = inputId.value.trim()
-    if (!isValidId(id) || id === String(route.params.id)) return
+    if (!isValidId(id) || id === String(props.pokemonId)) return
     router.replace({name:'pokemon', params:{id}})
 }
 
