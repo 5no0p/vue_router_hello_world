@@ -9,7 +9,7 @@ const routes = [
     { 
         path: '/pokemon/:id', 
         name: 'pokemon', 
-        component: () => import('./components/pokemonList.vue'),
+        component: () => import('./views/pokemonList.vue/index.js'),
         props: route => ({
             pokemonId: parseInt(route.params.id)
         })
@@ -17,13 +17,13 @@ const routes = [
     {
         path: '/type/:typeName',
         name:'type-list',
-        component: () => import('./components/pokemonList.vue'),
+        component: () => import('./views/pokemonList.vue/index.js'),
         props: true,
     },
     {
         path: '/pokemon/:nameOrId',
         name: 'pokemon-detail',
-        component: () => import('./components/pokemonDetail.vue'),
+        component: () => import('./views/pokemonDetail.vue/index.js'),
         props: true,
         children: [
             {
