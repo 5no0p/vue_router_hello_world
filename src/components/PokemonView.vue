@@ -55,7 +55,7 @@ const fetchPokemonData = async (pokemonId) => {
     try {
         const req = await fetch(`${pokemonUrl}${pokemonId}/`, {signal: controller.signal})
         if(!req.ok){
-            throw new Error(`HTTP error! status: ${data.status}`)
+            throw new Error(`HTTP error! status: ${req.status}`)
         }
         const data = await req.json()
         if (current !== requestId) return
@@ -108,7 +108,7 @@ watch(()=> props.pokemonId, (newId) => {
 
 onUnmounted(() => {
     clearTimeout(navTimeoutId)
-    controller?.abort
+    controller?.abort()
 })
 </script>
 
