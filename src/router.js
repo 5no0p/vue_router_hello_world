@@ -9,7 +9,7 @@ const routes = [
     { 
         path: '/pokemon/:id', 
         name: 'pokemon', 
-        component: () => import('./views/pokemonList.vue/index.js'),
+        component: () => import('./views/pokemonList.vue'),
         props: route => ({
             pokemonId: parseInt(route.params.id)
         })
@@ -17,13 +17,13 @@ const routes = [
     {
         path: '/type/:typeName',
         name:'type-list',
-        component: () => import('./views/pokemonList.vue/index.js'),
+        component: () => import('./views/pokemonList.vue'),
         props: true,
     },
     {
         path: '/pokemon/:nameOrId',
         name: 'pokemon-detail',
-        component: () => import('./views/pokemonDetail.vue/index.js'),
+        component: () => import('./views/pokemonDetail.vue'),
         props: true,
         children: [
             {
@@ -60,6 +60,7 @@ const router = createRouter({
     history: createWebHistory(),
     linkExactActiveClass: 'text-indigo-600 font-semibold',
     routes,
+    // scrollBehavior: () => ({top: 0}),
 })
 
 export default router
