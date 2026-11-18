@@ -9,11 +9,51 @@ const routes = [
     { 
         path: '/pokemon/:id', 
         name: 'pokemon', 
-        component: () => import('./components/PokemonView.vue'),
+        component: () => import('./components/pokemonList.vue'),
         props: route => ({
             pokemonId: parseInt(route.params.id)
         })
-    }
+    },
+    {
+        path: '/type/:typeName',
+        name:'type-list',
+        component: () => import('./components/pokemonList.vue'),
+        props: true,
+    },
+    {
+        path: '/pokemon/:nameOrId',
+        name: 'pokemon-detail',
+        component: () => import('./components/pokemonDetail.vue'),
+        props: true,
+        children: [
+            {
+                path: '', redirect: {name: 'pokemon-stats'}
+            },
+            {
+                path: 'stats',
+                name: 'pokemon-stats',
+                component: () => import('./components/pokemonStats.vue'),
+                props: true,
+            },
+            {
+                path: 'moves',
+                name: 'pokemon-moves',
+                component: () => import('./components/PokemonMoves.vue'),
+                props: true,
+            },
+            {
+                path: 'evolution',
+                name: 'pokemon-evolution',
+                component: () => import('./components/PokemonEvolution.vue'),
+                props: true,
+            }
+        ]
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'not-found',
+        component: () => import('./views/NotFound.vue'),
+    },
 ]
 
 const router = createRouter({
