@@ -120,7 +120,7 @@ const methodAccent = (method) => ({
           <!-- Section header with accent bar -->
           <div class="flex items-center gap-2 mb-3">
             <span :class="['h-2.5 w-2.5 rounded-full', methodAccent(group.method)]" />
-            <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider capitalize">
+            <h2 class="text-xs font-semibold text-gray-500 tracking-wider capitalize">
               {{ pretty(group.method) }}
             </h2>
             <span class="text-xs text-gray-400">({{ group.list.length }})</span>
