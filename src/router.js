@@ -6,14 +6,14 @@ import HomeView from './components/HomeView.vue'
 const routes = [
     { path: '/', component: HomeView },
     { path: '/about', component: () => import('./components/AboutView.vue')},
-    { 
-        path: '/pokemon/:id', 
-        name: 'pokemon', 
-        component: () => import('./views/pokemonList.vue'),
-        props: route => ({
-            pokemonId: parseInt(route.params.id)
-        })
-    },
+    // { 
+    //     path: '/pokemon/:id', 
+    //     name: 'pokemon', 
+    //     component: () => import('./views/pokemonList.vue'),
+    //     props: route => ({
+    //         pokemonId: parseInt(route.params.id)
+    //     })
+    // },
     {
         path: '/type/:typeName',
         name:'type-list',
@@ -27,7 +27,12 @@ const routes = [
         props: true,
         children: [
             {
-                path: '', redirect: {name: 'pokemon-stats'}
+                path: '',
+                redirect: to => ({
+                    name: 'pokemon-stats',
+                    params: { nameOrId: to.params.nameOrId }
+                })
+
             },
             {
                 path: 'stats',
